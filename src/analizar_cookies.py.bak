@@ -1,0 +1,122 @@
+import re
+import json
+from collections import defaultdict
+from pathlib import Path
+
+BASE = Path(__file__).resolve().parent.parent
+
+ARCHIVOS = {
+    "PEAD": BASE / "analisis" / "cabeceras.txt",
+    "PORTADA": BASE / "evidencias" / "procesadas" / "cabeceras_portada.txt",
+}
+
+def analizar_archivo(nombre, ruta):
+    resultado = {
+        "componente": nombre,
+        "archivo": str(ruta.relative_to(BASE)),
+        "cookies": {},
+        "cabeceras_malformadas": 0,
+        "total_validas": 0
+    }
+
+    if not ruta.exists():
+        resultado["error"] = "Archivo no encontrado"
+        return resultado
+
+    cookies = defaultdict(lambda: {
+        "instancias": 0,
+        "secure": 0,
+        "httponly": 0,
+        "samesite": [],
+        "path": []
+    })
+
+    with ruta.open("r", encoding="utf-8", errors="replace") as archivo:
+        for linea in archivo:
+            if not linea.lower().startswith("set-cookie:"):
+                continue
+
+            contenido = linea.split(":", 1)[1].strip()
+            partes = [p.strip() for p in contenido.split(";")]
+
+            if not partes or "=" not in partes[0]:
+                resultado["cabeceras_malformadas"] += 1
+                continue
+
+            nombre_cookie = partes[0].split("=", 1)[0].strip()
+
+            if not re.fullmatch(r"[!#$%&'*+\-.^_`|~0-9A-Za-z]+", nombre_cookie):
+                resultado["cabeceras_malformadas"] += 1
+                continue
+
+            atributos = [p.lower() for p in partes[1:]]
+            actual = cookies[nombre_cookie]
+
+            actual["instancias"] += 1
+            resultado["total_validas"] += 1
+
+            if any(a == "secure" for a in atributos):
+                actual["secure"] += 1
+
+            if any(a == "httponly" for a in atributos):
+                actual["httponly"] += 1
+
+            for atributo in atributos:
+                if atributo.startswith("samesite="):
+                    actual["samesite"].append(atributo.split("=", 1)[1])
+                elif atributo.startswith("path="):
+                    actual["path"].append(atributo.split("=", 1)[1])
+
+    for nombre_cookie, datos in cookies.items():
+        resultado["cookies"][nombre_cookie] = {
+            **datos,
+            "secure_ausente_en_todas": datos["secure"] == 0,
+            "httponly_ausente_en_todas": datos["httponly"] == 0,
+            "duplicada_en_captura": datos["instancias"] > 1
+        }
+
+    return resultado
+
+
+def main():
+    print("=" * 55)
+    print(" ANALIZADOR LOCAL DE COOKIES")
+    print("=" * 55)
+
+    resultados = []
+
+    for componente, ruta in ARCHIVOS.items():
+        datos = analizar_archivo(componente, ruta)
+        resultados.append(datos)
+
+        print(f"\n===== {componente} =====")
+
+        if "error" in datos:
+            print("[ERROR]", datos["error"])
+            continue
+
+        print("Instancias válidas:", datos["total_validas"])
+        print("Cabeceras malformadas:", datos["cabeceras_malformadas"])
+
+        for nombre, cookie in datos["cookies"].items():
+            print(f"\nCookie: {nombre}")
+            print("  Instancias:", cookie["instancias"])
+            print("  Secure:", cookie["secure"], "/", cookie["instancias"])
+            print("  HttpOnly:", cookie["httponly"], "/", cookie["instancias"])
+            print("  SameSite:", cookie["samesite"])
+            print("  Path:", cookie["path"])
+            print("  Duplicada en captura:", cookie["duplicada_en_captura"])
+
+    salida = BASE / "resultados" / "analisis_cookies.json"
+    salida.parent.mkdir(exist_ok=True)
+
+    salida.write_text(
+        json.dumps(resultados, indent=2, ensure_ascii=False),
+        encoding="utf-8"
+    )
+
+    print("\n[OK] Resultado guardado en:", salida.relative_to(BASE))
+
+
+if __name__ == "__main__":
+    main()

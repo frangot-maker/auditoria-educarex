@@ -1,0 +1,71 @@
+{
+    "proyecto": "Auditoria PEAD Educarex",
+    "version": "1.0",
+    "fecha_utc": "2026-11-24T16:45:05.632401+00:00",
+    "modo": "analisis_local_sin_conexiones",
+    "hallazgos": [
+        {
+            "id": "E-004",
+            "titulo": "Cabeceras de seguridad no observadas",
+            "estado": "Pendiente de verificación",
+            "prioridad": "Baja provisional",
+            "descripcion": "Las siguientes cabeceras no aparecen en el archivo de cabeceras recopiladas. No implica que falten en todas las respuestas del servidor.",
+            "evidencia": [
+                "content-security-policy",
+                "referrer-policy",
+                "strict-transport-security",
+                "x-content-type-options",
+                "x-frame-options"
+            ]
+        },
+        {
+            "id": "E-002",
+            "titulo": "Atributos de seguridad de cookies",
+            "estado": "Pendiente de verificación",
+            "prioridad": "Baja provisional",
+            "descripcion": "Se han registrado cookies. Debe revisarse la presencia de Secure, HttpOnly y SameSite en respuestas completas.",
+            "evidencia": {
+                "nombres": [
+                    "gcprsess"
+                ],
+                "instancias": 6
+            }
+        },
+        {
+            "id": "E-003",
+            "titulo": "Posible duplicidad de cookies",
+            "estado": "Observado, causa desconocida",
+            "prioridad": "Informativa",
+            "descripcion": "Se repiten nombres de cookies en el conjunto de respuestas. Es necesario distinguir regeneraciones legítimas de posibles errores de configuración.",
+            "evidencia": [
+                "gcprsess"
+            ]
+        },
+        {
+            "id": "E-001",
+            "titulo": "Divulgación de información interna mediante error SQL",
+            "estado": "Confirmado en la evidencia recopilada",
+            "prioridad": "Media provisional",
+            "descripcion": "La página de error muestra información interna de la base de datos y de la implementación.",
+            "evidencia": {
+                "codigo_sql": "1048",
+                "columna": "login",
+                "tabla": "pead_usuariosacceso0",
+                "archivo": "modules/login/models/Login_model.php",
+                "linea": "46"
+            }
+        }
+    ],
+    "evidencias": [
+        {
+            "archivo": "analisis/cabeceras.txt",
+            "sha256": "cd686feec56128b4c86791d8fca8876546064c64bf7a0c47390a5be6e57cf36f",
+            "bytes": 911
+        },
+        {
+            "archivo": "evidencias/pead_500.html",
+            "sha256": "4d2b3c51789d2bd7fbd3b3e11ba92765678f368abeb71666d44c6417d21b4909",
+            "bytes": 1507
+        }
+    ]
+}

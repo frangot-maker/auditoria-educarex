@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Prueba local jQuery</title>
+</head>
+<body>
+<h2>Prueba local de inserción HTML</h2>
+
+<div id="mensajeerror"></div>
+<p id="resultado">Esperando prueba...</p>
+
+<script src="jquery.js"></script>
+<script>
+    var mensaje = "<strong>MARCADOR_HTML_LOCAL</strong>";
+
+    $("#mensajeerror").html(mensaje);
+
+    if ($("#mensajeerror strong").length === 1) {
+        $("#resultado").text(
+            "CONFIRMADO: .html() ha interpretado el contenido como HTML."
+        );
+    } else {
+        $("#resultado").text(
+            "No se ha observado la interpretación HTML esperada."
+        );
+    }
+</script>
+</body>
+</html>

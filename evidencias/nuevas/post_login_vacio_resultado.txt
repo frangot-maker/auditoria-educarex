@@ -1,0 +1,20 @@
+PRUEBA: POST vacío al endpoint de login PEAD
+Fecha: 2026-11-24
+
+Método: POST
+Endpoint: /pead/login/login/login
+Datos enviados: cuerpo vacío
+HTTP: 500
+Content-Type: text/html; charset=UTF-8
+Location: No observada
+Set-Cookie recibidas: 2
+Tamaño de respuesta: 1507 bytes
+
+SHA-256:
+e5c4e342a0785d251d8c08708f8730ae5386b8d719d31ebc7d0fa0a0ea448f26
+
+LIMITACIONES:
+El cuerpo HTML no se conservó.
+No se conoce el mensaje de error concreto.
+No se puede determinar si corresponde al error SQL E-001.
+No se han probado credenciales.

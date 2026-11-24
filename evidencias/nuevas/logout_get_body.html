@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Registro | Programas Educativos y Atención a la Diversidad</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="/pead/pub/css/estilos.css">    
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
+
+<body class="hold-transition login-page">
+    
+    <div class="login-box">
+        <div class="login-logo">
+            <a href="#"><b>Registro</b> Créditos de Innovación. Programas SPEyAD</a>
+        </div>
+        <div class="login-box-body">
+            <div id="divmensajeerror" class="callout callout-danger" style="display: none">
+                <button type="button" class="close" data-dismiss="alert"  onclick="$('#divmensajeerror').hide()" aria-hidden="true">×</button>
+                <p id="mensajeerror"></p>
+            </div>
+                        <p class="login-box-msg">Introduzca login y password para comenzar</p>
+            <form id="formulario-acceso"  method="post">
+                <div class="form-group has-feedback">
+                    <input type="text" id="usuario" name="usuario" value="" class="form-control" placeholder="Login">
+                    <span class="glyphicon glyphicon glyphicon-user form-control-feedback"></span>
+                </div>
+                <div class="form-group has-feedback">
+                    <input type="password" id="password" name="password" value="" class="form-control" placeholder="Password">
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                </div>
+                <div class="form-group has-feedback">
+                  <select name="cursoacademico" class="form-control">
+                  	<option value="2022">Curso Académico 2022/2023</option>                   
+                  </select>
+                  
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <button type="button" id="btnLogin"  class="btn bg-olive btn-flat btn-block">Acceder</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="/pead/pub/js/jquery.js"></script>
+    <script src="/pead/pub/js/bootstrap.js"></script>
+    <script src="/pead/pub/js/jquery.validate.min.js">
+    </script>
+    <script type="text/javascript">
+    var BASE_URL = "/pead/";
+    </script>
+    <script src="/pead/pub/js/comp/login.js" async></script>
+</body>
+
+</html>

@@ -1,0 +1,14 @@
+Origen: https://www.educarex.es/
+Método: HEAD
+Estado: HTTP 200 OK
+Server: Apache
+
+Set-Cookie: s_edx=VALOR_REDACTADO_1; path=/; samesite=Lax
+Set-Cookie: s_edx=VALOR_REDACTADO_2; path=/; samesite=Lax
+
+Observaciones:
+- Los valores originales han sido redactados.
+- Se observaron dos instancias de s_edx.
+- Secure no aparece en las cabeceras capturadas.
+- HttpOnly no aparece en las cabeceras capturadas.
+- SameSite=Lax.

@@ -1,0 +1,6 @@
+HTTP: 200
+Content-Type: text/html; charset=UTF-8
+Location: No observado
+Set-Cookie recibidas: 2
+Longitud: 59
+SHA-256: 915405079436307d7a08eef38026746743c9a40bc267a07138e301779aa0f8f3

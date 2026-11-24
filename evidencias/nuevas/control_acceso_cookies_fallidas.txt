@@ -1,0 +1,29 @@
+PRUEBA: Control de acceso con cookies de autenticación fallida
+Fecha: 2026-11-24
+
+Se realizó un POST al endpoint de login con credenciales ficticias.
+Respuesta del login: HTTP 200.
+Cookies recibidas: 2.
+
+Se solicitaron las siguientes rutas sin seguir redirecciones:
+
+/pead/admin/admin
+HTTP: 307
+Location: /pead/login/logout.html
+Cuerpo: vacío
+
+/pead/dashboard
+HTTP: 307
+Location: /pead/login/logout.html
+Cuerpo: vacío
+
+SHA-256 de ambos cuerpos:
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+
+CONCLUSIÓN:
+No se consiguió acceder a las rutas protegidas utilizando
+las cookies anónimas generadas por un intento de autenticación fallido.
+
+LIMITACIÓN:
+No se ha probado una sesión autenticada ni se ha evaluado
+la autorización entre diferentes roles.

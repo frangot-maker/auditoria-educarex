@@ -1,0 +1,17 @@
+HTTP/1.1 307 Temporary Redirect
+Server: Apache
+Set-Cookie: gcprsess=2nb0gj4js3u1rm48evh1njool7; expires=Tue, 24-Nov-2026 18:27:16 GMT; Max-Age=7200; path=/
+Set-Cookie: gcprsess=n3djl5hr9l23scua2koubkpe92; expires=Tue, 24-Nov-2026 18:27:16 GMT; Max-Age=7200; path=/
+Location: /pead/login/logout.html
+
+HTTP/1.1 500 Internal Server Error
+Server: Apache
+Set-Cookie: osnid980andn7am4qbd2qtpmb7; expires=Tue, 24-Nov-2026 18:27:21 GMT; Max-Age=7200; path=/
+Set-Cookie: gcprsess=6b37cusjg5oi71lh56p8nhuqb4; expires=Tue, 24-Nov-2026 18:27:21 GMT; Max-Age=7200; path=/
+Content-Length: 1507
+
+HTTP/1.1 500 Internal Server Error
+Server: Apache
+Set-Cookie: gcprsess=r1opmkpsoorg4v6cscjdiaq6r2; expires=Tue, 24-Nov-2026 18:28:41 GMT; Max-Age=7200; path=/
+Cache-Control: max-age=0, no-cache, no-store, must-revalidate
+Set-Cookie: gcprsess=7tvdp6shqso358kjarpnjlva10; expires=Tue, 24-Nov-2026 18:28:41 GMT; Max-Age=7200; path=/

@@ -1,0 +1,12 @@
+@import "aplicacion.css";
+@import "bootstrap.min.css";
+@import "bootstrap-theme.min.css";
+@import "AdminLTE.min.css";
+@import "skins/skin-blue.min.css";
+@import "modulos.css";
+@import "ionicons.min.css";
+@import "font-awesome.min.css";
+@import "../plugins/datatables/css/dataTables.bootstrap.css";
+@import "../plugins/datepicker/css/bootstrap-datepicker.min.css";
+@import "../plugins/pace/pace.min.css";
+@import "bootstrap-multiselect.css";

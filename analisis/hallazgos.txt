@@ -1,0 +1,25 @@
+AUDITORIA PEAD - EDUCAREX
+
+HALLAZGO 1:
+HTTP 500 en /pead/login/login/login
+
+HALLAZGO 2:
+Error SQL 1048:
+Column 'login' cannot be null
+
+HALLAZGO 3:
+Exposicion de informacion interna:
+modules/login/models/Login_model.php
+Linea 46
+
+HALLAZGO 4:
+Exposicion de tabla:
+pead_usuariosacceso0
+
+HALLAZGO 5:
+Dos cabeceras Set-Cookie:
+gcprsess
+
+HALLAZGO 6:
+Redireccion administrativa:
+307 -> /pead/login/logout.html

@@ -1,0 +1,181 @@
+[
+  {
+    "componente": "PEAD",
+    "archivo": "analisis/cabeceras.txt",
+    "respuestas_analizadas": 3,
+    "cookies": {
+      "gcprsess": {
+        "instancias": 5,
+        "secure": 0,
+        "httponly": 0,
+        "samesite": [
+          "No declarado",
+          "No declarado",
+          "No declarado",
+          "No declarado",
+          "No declarado"
+        ],
+        "path": [
+          "/",
+          "/",
+          "/",
+          "/",
+          "/"
+        ],
+        "max_age": [
+          "7200",
+          "7200",
+          "7200",
+          "7200",
+          "7200"
+        ],
+        "respuestas": [
+          1,
+          2,
+          3
+        ],
+        "duplicada_en_alguna_respuesta": true,
+        "secure_ausente_en_todas": true,
+        "httponly_ausente_en_todas": true,
+        "samesite_ausente_en_todas": true
+      }
+    },
+    "respuestas": [
+      {
+        "numero": 1,
+        "estado_http": "307",
+        "total_cookies_validas": 2,
+        "cabeceras_malformadas": 0,
+        "duplicadas": {
+          "gcprsess": 2
+        },
+        "cookies": [
+          {
+            "nombre": "gcprsess",
+            "secure": false,
+            "httponly": false,
+            "samesite": "No declarado",
+            "path": "/",
+            "max_age": "7200"
+          },
+          {
+            "nombre": "gcprsess",
+            "secure": false,
+            "httponly": false,
+            "samesite": "No declarado",
+            "path": "/",
+            "max_age": "7200"
+          }
+        ]
+      },
+      {
+        "numero": 2,
+        "estado_http": "500",
+        "total_cookies_validas": 1,
+        "cabeceras_malformadas": 1,
+        "duplicadas": {},
+        "cookies": [
+          {
+            "nombre": "gcprsess",
+            "secure": false,
+            "httponly": false,
+            "samesite": "No declarado",
+            "path": "/",
+            "max_age": "7200"
+          }
+        ]
+      },
+      {
+        "numero": 3,
+        "estado_http": "500",
+        "total_cookies_validas": 2,
+        "cabeceras_malformadas": 0,
+        "duplicadas": {
+          "gcprsess": 2
+        },
+        "cookies": [
+          {
+            "nombre": "gcprsess",
+            "secure": false,
+            "httponly": false,
+            "samesite": "No declarado",
+            "path": "/",
+            "max_age": "7200"
+          },
+          {
+            "nombre": "gcprsess",
+            "secure": false,
+            "httponly": false,
+            "samesite": "No declarado",
+            "path": "/",
+            "max_age": "7200"
+          }
+        ]
+      }
+    ],
+    "cabeceras_malformadas": 1,
+    "total_validas": 5
+  },
+  {
+    "componente": "PORTADA",
+    "archivo": "evidencias/procesadas/cabeceras_portada.txt",
+    "respuestas_analizadas": 1,
+    "cookies": {
+      "s_edx": {
+        "instancias": 2,
+        "secure": 0,
+        "httponly": 0,
+        "samesite": [
+          "Lax",
+          "Lax"
+        ],
+        "path": [
+          "/",
+          "/"
+        ],
+        "max_age": [
+          "No declarado",
+          "No declarado"
+        ],
+        "respuestas": [
+          1
+        ],
+        "duplicada_en_alguna_respuesta": true,
+        "secure_ausente_en_todas": true,
+        "httponly_ausente_en_todas": true,
+        "samesite_ausente_en_todas": false
+      }
+    },
+    "respuestas": [
+      {
+        "numero": 1,
+        "estado_http": "No identificado",
+        "total_cookies_validas": 2,
+        "cabeceras_malformadas": 0,
+        "duplicadas": {
+          "s_edx": 2
+        },
+        "cookies": [
+          {
+            "nombre": "s_edx",
+            "secure": false,
+            "httponly": false,
+            "samesite": "Lax",
+            "path": "/",
+            "max_age": "No declarado"
+          },
+          {
+            "nombre": "s_edx",
+            "secure": false,
+            "httponly": false,
+            "samesite": "Lax",
+            "path": "/",
+            "max_age": "No declarado"
+          }
+        ]
+      }
+    ],
+    "cabeceras_malformadas": 0,
+    "total_validas": 2
+  }
+]

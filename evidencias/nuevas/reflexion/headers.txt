@@ -1,0 +1,10 @@
+HTTP/1.1 301 Moved Permanently
+Date: Tue, 24 Nov 2026 19:03:13 GMT
+Server: Apache
+Location: https://educarex.es/pead/?audit=PEAD_AUDIT_REFLECTION_20261124
+Cache-Control: max-age=172800
+Expires: Thu, 26 Nov 2026 19:03:13 GMT
+Content-Length: 270
+Connection: close
+Content-Type: text/html; charset=iso-8859-1
+
