@@ -1,0 +1,11 @@
+AUDITORÍA PEAD EDUCAREX — VERSIÓN 1.1
+
+E-001: Divulgación de información interna mediante error SQL — Confirmado en la evidencia conservada.
+E-002: Atributos de seguridad de cookies no observados — Observado en las respuestas recopiladas; inventario pendiente de consolidación.
+E-003: Duplicación de cookies de sesión en una misma respuesta — Reproducido en múltiples respuestas anónimas; impacto no demostrado.
+E-004: Cabeceras de seguridad no observadas — No observadas en las capturas revisadas; alcance limitado.
+E-005: Cabecera Set-Cookie con formato no válido — Observado en una captura.
+E-006: Diferencias entre cabeceras de respuestas HTTP 500 — Observado; impacto no demostrado.
+
+Hipótesis pendientes: H-001 posible DOM XSS; H-002 validación de curso académico.
+No se ha demostrado SQLi, XSS, bypass ni secuestro de sesión.

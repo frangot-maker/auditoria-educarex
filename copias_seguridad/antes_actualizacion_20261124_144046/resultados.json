@@ -1,0 +1,102 @@
+{
+    "proyecto": "Auditoria PEAD Educarex",
+    "version": "1.0",
+    "fecha_utc": "2026-11-24T16:45:05.632401+00:00",
+    "modo": "analisis_local_sin_conexiones",
+    "hallazgos": [
+        {
+            "id": "E-004",
+            "titulo": "Cabeceras de seguridad no observadas",
+            "estado": "No observadas en las capturas; pendiente de verificación global",
+            "prioridad": "Baja provisional",
+            "descripcion": "Las nueve cabeceras indicadas no aparecen en analisis/cabeceras.txt. La observación se limita a las respuestas recopiladas.",
+            "evidencia": [
+                "strict-transport-security",
+                "content-security-policy",
+                "x-frame-options",
+                "x-content-type-options",
+                "referrer-policy",
+                "permissions-policy",
+                "cross-origin-opener-policy",
+                "cross-origin-resource-policy",
+                "cross-origin-embedder-policy"
+            ]
+        },
+        {
+            "id": "E-002",
+            "titulo": "Atributos de seguridad de cookies",
+            "estado": "Observado en las capturas recopiladas",
+            "prioridad": "Baja provisional",
+            "descripcion": "Las cookies gcprsess observadas no declaran los atributos Secure, HttpOnly ni SameSite. La observación se limita a las respuestas recopiladas.",
+            "evidencia": {
+                "nombres": [
+                    "gcprsess"
+                ],
+                "instancias": 5,
+                "secure": false,
+                "httponly": false,
+                "samesite": "No declarado"
+            }
+        },
+        {
+            "id": "E-003",
+            "titulo": "Duplicación de cookies de sesión en una misma respuesta",
+            "estado": "Observado, causa desconocida",
+            "prioridad": "Informativa",
+            "descripcion": "Se observaron varias cabeceras Set-Cookie con el nombre gcprsess dentro de una misma respuesta HTTP. La causa y el efecto sobre la sesión son desconocidos.",
+            "evidencia": {
+                "cookie": "gcprsess",
+                "observacion": "Duplicación en respuestas recopiladas"
+            }
+        },
+        {
+            "id": "E-001",
+            "titulo": "Divulgación de información interna mediante error SQL",
+            "estado": "Confirmado en la evidencia recopilada",
+            "prioridad": "Media provisional",
+            "descripcion": "La página de error muestra información interna de la base de datos y de la implementación.",
+            "evidencia": {
+                "codigo_sql": "1048",
+                "columna": "login",
+                "tabla": "pead_usuariosacceso0",
+                "archivo": "modules/login/models/Login_model.php",
+                "linea": "46"
+            }
+        },
+        {
+            "id": "E-005",
+            "titulo": "Cabecera Set-Cookie con formato no válido",
+            "estado": "Observado en una captura",
+            "prioridad": "Informativa",
+            "descripcion": "En una respuesta HTTP 500 aparece una cabecera Set-Cookie cuyo primer campo no presenta el formato habitual nombre=valor.",
+            "evidencia": {
+                "archivo": "analisis/cabeceras.txt",
+                "observacion": "Campo inicial de Set-Cookie malformado"
+            }
+        },
+        {
+            "id": "E-006",
+            "titulo": "Diferencias entre cabeceras de respuestas HTTP 500",
+            "estado": "Observado en las evidencias recopiladas",
+            "prioridad": "Informativa",
+            "descripcion": "Dos respuestas HTTP 500 conservadas presentan diferencias en Content-Length y Cache-Control. No se ha demostrado un impacto de seguridad.",
+            "evidencia": {
+                "archivo": "analisis/cabeceras.txt",
+                "primera_respuesta": "Content-Length: 1507",
+                "segunda_respuesta": "Cache-Control: max-age=0, no-cache, no-store, must-revalidate"
+            }
+        }
+    ],
+    "evidencias": [
+        {
+            "archivo": "analisis/cabeceras.txt",
+            "sha256": "8ef9eeff7330aa5fc7a3076c775410ca12ceebf56172d84654b1e68d39006f94",
+            "bytes": 838
+        },
+        {
+            "archivo": "evidencias/pead_500.html",
+            "sha256": "4d2b3c51789d2bd7fbd3b3e11ba92765678f368abeb71666d44c6417d21b4909",
+            "bytes": 1507
+        }
+    ]
+}

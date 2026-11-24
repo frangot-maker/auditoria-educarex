@@ -1,199 +1,176 @@
 # Registro de hallazgos — Auditoría PEAD Educarex
+**Versión:** 1.1  
+**Actualización:** 24-11-2026
 
 ## E-001 — Divulgación de información interna mediante error SQL
 
-**Estado:** Confirmado en la evidencia recopilada.
+**Estado:** Confirmado en la evidencia conservada  
+**Prioridad provisional:** Media provisional
 
-**Severidad:** Media provisional.
+**Descripción:** La respuesta HTTP 500 conservada expone el error SQL 1048, la columna login, la tabla pead_usuariosacceso0, una sentencia INSERT y la ruta y línea del modelo. También se observaron respuestas HTTP 500 ante HEAD y OPTIONS en el endpoint de login. En OPTIONS se observó una plantilla de error de base de datos, pero no se confirmó que contuviera exactamente el mismo error SQL.
 
-**Evidencia:**
-La respuesta HTTP 500 conservada en `evidencias/pead_500.html` muestra:
+**Evidencia estructurada:**
 
-- Error Number: 1048.
-- Mensaje: Column 'login' cannot be null.
-- Operación SQL: INSERT.
-- Tabla: pead_usuariosacceso0.
-- Columna: login.
-- Modelo: modules/login/models/Login_model.php.
-- Línea: 46.
+```json
+{
+  "archivo_principal": "evidencias/pead_500.html",
+  "codigo_sql": "1048",
+  "columna": "login",
+  "tabla": "pead_usuariosacceso0",
+  "archivo_fuente_expuesto": "modules/login/models/Login_model.php",
+  "linea": 46,
+  "head": "HTTP 500 observado; cuerpo no conservado",
+  "options": "HTTP 500; plantilla de error DB observada parcialmente"
+}
+```
 
-**Interpretación:**
-La aplicación devuelve al cliente información interna sobre una operación SQL y detalles de implementación.
-
-**Impacto potencial:**
-Divulgación de información técnica que puede facilitar el reconocimiento de la arquitectura interna.
-
-**Limitaciones:**
-No se ha demostrado SQL injection ni acceso no autorizado a la base de datos. La plantilla es compatible visualmente con CodeIgniter, pero no se ha identificado su versión.
-
-**Recomendaciones:**
-- Desactivar los errores detallados de base de datos en producción.
-- Mostrar mensajes genéricos al usuario.
-- Guardar los detalles técnicos en registros protegidos.
-- Revisar la validación del campo login antes de ejecutar la operación SQL.
+**Limitación:** no debe inferirse un impacto no demostrado a partir de la observación técnica.
 
 ---
 
 ## E-002 — Atributos de seguridad de cookies no observados
 
-**Estado:** Observado, pendiente de evaluación de impacto.
+**Estado:** Observado en las respuestas recopiladas; inventario pendiente de consolidación  
+**Prioridad provisional:** Baja provisional
 
-**Severidad:** Baja provisional.
+**Descripción:** Las instancias gcprsess examinadas no muestran Secure, HttpOnly ni SameSite. El recuento inicial fue de cinco instancias válidas; se recopilaron respuestas adicionales posteriormente, por lo que el total definitivo debe recalcularse desde las cabeceras redactadas.
 
-**Componente:** PEAD.
+**Evidencia estructurada:**
 
-**Evidencia:**
-En las cinco instancias válidas de la cookie gcprsess recopiladas:
+```json
+{
+  "cookie": "gcprsess",
+  "recuento_inicial": 5,
+  "secure": "No observado",
+  "httponly": "No observado",
+  "samesite": "No declarado",
+  "limitacion": "No se ha consolidado el total de todas las respuestas"
+}
+```
 
-- Secure: no observado (0/5).
-- HttpOnly: no observado (0/5).
-- SameSite: no declarado.
-- Path: /.
-
-**Interpretación:**
-Las cabeceras recopiladas no muestran atributos de protección Secure, HttpOnly ni SameSite para gcprsess.
-
-**Impacto potencial:**
-Mayor exposición de la cookie ante determinados escenarios de ataque, dependiendo de su función y del contexto de uso.
-
-**Limitaciones:**
-No se ha demostrado secuestro de sesión, acceso no autorizado ni explotación. El análisis se limita a las cabeceras conservadas.
-
-**Recomendaciones:**
-- Revisar la configuración de las cookies de sesión.
-- Establecer Secure cuando la aplicación funcione exclusivamente mediante HTTPS.
-- Establecer HttpOnly cuando no sea necesario acceder a la cookie desde JavaScript.
-- Configurar una política SameSite adecuada al funcionamiento de la aplicación.
+**Limitación:** no debe inferirse un impacto no demostrado a partir de la observación técnica.
 
 ---
 
 ## E-003 — Duplicación de cookies de sesión en una misma respuesta
 
-**Estado:** Observado, causa desconocida.
+**Estado:** Reproducido en múltiples respuestas anónimas; impacto no demostrado  
+**Prioridad provisional:** Informativa
 
-**Componente:** PEAD.
+**Descripción:** Se observaron varias cabeceras Set-Cookie con nombre gcprsess en múltiples respuestas HTML de PEAD. Las cookies propias se probaron individualmente y en conjunto; las páginas públicas mantuvieron el mismo contenido y las rutas protegidas redirigieron al acceso. No se demostró bypass, fijación ni secuestro de sesión.
 
-**Evidencia:**
-En las respuestas recopiladas se observa:
+**Evidencia estructurada:**
 
-- HTTP 307: dos cabeceras Set-Cookie con nombre gcprsess.
-- Primera respuesta HTTP 500: una cabecera gcprsess válida.
-- Segunda respuesta HTTP 500: dos cabeceras Set-Cookie con nombre gcprsess.
-- Las instancias observadas utilizan Path=/.
+```json
+{
+  "cookie": "gcprsess",
+  "observacion": "Duplicación en respuestas HTML",
+  "prueba_individual_y_conjunta": "Realizada con cookies anónimas propias",
+  "resultado_acceso": "Redirección al login",
+  "impacto": "No demostrado"
+}
+```
 
-**Interpretación:**
-Se observa la emisión de varias cookies con el mismo nombre dentro de una misma respuesta HTTP en dos de las tres respuestas analizadas.
-
-**Impacto potencial:**
-Posibles ambigüedades en la gestión de sesiones, dependiendo de cómo se procesen las cookies emitidas.
-
-**Limitaciones:**
-No se ha demostrado fijación de sesión, secuestro de sesión ni acceso no autorizado. Se desconoce si la duplicación responde a una regeneración legítima.
-
-**Recomendaciones:**
-- Revisar la inicialización y regeneración de sesiones.
-- Comprobar la coherencia de las cabeceras Set-Cookie.
-- Evitar emitir cookies redundantes o contradictorias.
+**Limitación:** no debe inferirse un impacto no demostrado a partir de la observación técnica.
 
 ---
 
 ## E-004 — Cabeceras de seguridad no observadas
 
-**Estado:** No observadas en las capturas; pendiente de verificación global.
+**Estado:** No observadas en las capturas revisadas; alcance limitado  
+**Prioridad provisional:** Baja provisional
 
-**Severidad:** Baja provisional.
+**Descripción:** Las capturas revisadas no muestran determinadas cabeceras de seguridad. Esto no demuestra su ausencia en todas las rutas, respuestas o configuraciones del servidor.
 
-**Componente:** Respuestas HTTP recopiladas.
+**Evidencia estructurada:**
 
-**Evidencia:**
-No aparecen en las respuestas revisadas:
+```json
+[
+  "Strict-Transport-Security",
+  "Content-Security-Policy",
+  "X-Frame-Options",
+  "X-Content-Type-Options",
+  "Referrer-Policy",
+  "Permissions-Policy",
+  "Cross-Origin-Opener-Policy",
+  "Cross-Origin-Resource-Policy",
+  "Cross-Origin-Embedder-Policy"
+]
+```
 
-- Strict-Transport-Security.
-- Content-Security-Policy.
-- X-Frame-Options.
-- X-Content-Type-Options.
-- Referrer-Policy.
-- Permissions-Policy.
-- Cross-Origin-Opener-Policy.
-- Cross-Origin-Resource-Policy.
-- Cross-Origin-Embedder-Policy.
-
-**Interpretación:**
-Las cabeceras indicadas no aparecen en el conjunto de respuestas analizado.
-
-**Impacto potencial:**
-Menor protección frente a determinados ataques que pueden mitigarse mediante políticas de seguridad del navegador.
-
-**Limitaciones:**
-No se ha verificado la configuración global del servidor ni todas las rutas y respuestas de la aplicación.
-
-**Recomendaciones:**
-- Revisar las políticas de seguridad HTTP.
-- Evaluar qué cabeceras son adecuadas para la aplicación.
-- Configurarlas de forma coherente en el servidor o en la aplicación.
+**Limitación:** no debe inferirse un impacto no demostrado a partir de la observación técnica.
 
 ---
 
 ## E-005 — Cabecera Set-Cookie con formato no válido
 
-**Estado:** Observado en una captura.
+**Estado:** Observado en una captura  
+**Prioridad provisional:** Informativa
 
-**Componente:** PEAD.
+**Descripción:** En una respuesta HTTP 500 se observó una cabecera Set-Cookie cuyo primer campo no presenta la estructura habitual nombre=valor. No se ha identificado su origen ni el efecto en los navegadores.
 
-**Evidencia:**
-En una respuesta HTTP 500 aparece una cabecera Set-Cookie cuyo primer campo no presenta el formato habitual nombre=valor.
+**Evidencia estructurada:**
 
-**Interpretación:**
-La cabecera recopilada presenta una estructura no habitual para una cookie HTTP.
+```json
+{
+  "archivo": "analisis/cabeceras.txt",
+  "observacion": "Campo inicial de Set-Cookie malformado",
+  "limitacion": "Origen y efecto no determinados"
+}
+```
 
-**Impacto potencial:**
-Posibles problemas de interpretación o gestión de cookies por parte del cliente.
-
-**Limitaciones:**
-No se ha determinado qué componente genera la cabecera ni cómo la interpreta el navegador.
-
-**Recomendaciones:**
-- Revisar la generación de cabeceras Set-Cookie.
-- Identificar el origen de la cabecera mediante los registros del servidor.
-- Comprobar que todas las cookies emitidas cumplen el formato esperado.
+**Limitación:** no debe inferirse un impacto no demostrado a partir de la observación técnica.
 
 ---
 
 ## E-006 — Diferencias entre cabeceras de respuestas HTTP 500
 
-**Estado:** Observado en las evidencias recopiladas.
+**Estado:** Observado; impacto no demostrado  
+**Prioridad provisional:** Informativa
 
-**Severidad:** Informativa.
+**Descripción:** Las respuestas HTTP 500 conservadas presentan diferencias en cabeceras y huellas. Se registró Content-Length 1507 en determinadas respuestas y una política Cache-Control no-cache en otra. Un POST vacío tuvo 1507 bytes y un hash distinto, pero su cuerpo no se conservó.
 
-**Componente:** Respuestas HTTP de PEAD.
+**Evidencia estructurada:**
 
-**Evidencia:**
-Las dos respuestas HTTP 500 conservadas presentan diferencias:
+```json
+{
+  "content_length_observado": 1507,
+  "cache_control_observado": "max-age=0, no-cache, no-store, must-revalidate",
+  "post_vacio": "HTTP 500; cuerpo no conservado",
+  "impacto": "No demostrado"
+}
+```
 
-- Primera respuesta: Content-Length: 1507.
-- Segunda respuesta: Cache-Control: max-age=0, no-cache, no-store, must-revalidate.
-
-**Interpretación:**
-Las respuestas de error presentan cabeceras diferentes en las capturas analizadas.
-
-**Impacto potencial:**
-No se ha demostrado un impacto de seguridad. La diferencia puede responder a comportamientos distintos de la aplicación o del servidor.
-
-**Limitaciones:**
-El análisis se limita a dos respuestas HTTP 500. No permite determinar la configuración general de caché del servidor.
-
-**Recomendaciones:**
-- Revisar la uniformidad de las cabeceras de las respuestas de error.
-- Comprobar las políticas de caché aplicables.
-- Mantener un comportamiento coherente cuando corresponda.
+**Limitación:** no debe inferirse un impacto no demostrado a partir de la observación técnica.
 
 ---
 
+## Hipótesis pendientes de confirmación
+
+### H-001 — Posible DOM XSS en el login
+
+El archivo `evidencias/nuevas/login.js` inserta `data.mensaje` mediante
+`.html()`. El sumidero está identificado, pero no se ha demostrado que
+una entrada anónima controle el mensaje ni que exista ejecución de código
+en PEAD. No se clasifica como vulnerabilidad confirmada.
+
+### H-002 — Validación del parámetro cursoacademico
+
+El formulario no declara una regla JavaScript para este campo. La respuesta
+del servidor a un curso ficticio fue el mismo rechazo genérico de credenciales.
+El comportamiento no permite concluir si la validación del servidor es correcta.
+
+## Pruebas negativas relevantes
+
+- Credenciales ficticias rechazadas.
+- Marcadores enviados no reflejados en las respuestas JSON examinadas.
+- Cookies anónimas propias no permitieron acceder a rutas protegidas.
+- Rutas administrativas probadas redirigieron al login.
+- No se ha demostrado SQL injection, XSS, bypass ni secuestro de sesión.
+
 ## Limitaciones generales
 
-- Análisis basado en respuestas HTTP previamente recopiladas.
-- No se ha verificado la configuración global del servidor.
-- No se ha demostrado SQL injection, secuestro de sesión ni acceso no autorizado.
-- No se han realizado pruebas intrusivas sobre el servicio de producción.
-- Los hallazgos pendientes requieren confirmación por el responsable técnico o en un entorno de pruebas autorizado.
-- Las severidades indicadas son provisionales y deberán revisarse durante la validación técnica.
+- No se dispone de cuentas de prueba, código fuente ni configuración interna.
+- No se ha confirmado la versión del framework.
+- El recuento total de cookies debe consolidarse.
+- Los resultados describen únicamente las respuestas y recursos efectivamente examinados.

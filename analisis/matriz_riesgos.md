@@ -1,125 +1,48 @@
-# Matriz de riesgos - Auditoría PEAD Educarex
+# Matriz de riesgos — Auditoría PEAD Educarex
 
-## Criterios de valoración
+**Versión:** 1.1 — 24-11-2026
 
-- Alto: problema con impacto relevante y confirmado.
-- Medio: deficiencia confirmada o indicio con impacto potencial.
-- Bajo: observación de impacto limitado o pendiente de determinar.
-- Informativo: observación técnica sin impacto de seguridad demostrado.
+Las prioridades son provisionales y no constituyen una puntuación CVSS.
+Se valora por separado la existencia de una observación y la demostración
+de impacto explotable.
 
-Las valoraciones son provisionales y no equivalen a puntuaciones CVSS.
-
-## Matriz de hallazgos
-
-| ID | Hallazgo | Estado | Prioridad provisional |
+| ID | Hallazgo | Estado | Prioridad |
 |---|---|---|---|
-| E-001 | Divulgación de información interna mediante error SQL | Confirmado en evidencia | Media |
-| E-002 | Ausencia de atributos de seguridad en cookies | Observado en 5 instancias | Baja |
-| E-003 | Duplicación reproducible de cookies de sesión | Reproducido en múltiples respuestas HTML y pruebas de reutilización anónima | Informativa |
-| E-004 | Cabeceras HTTP de seguridad no observadas | Observado en capturas | Baja |
-| E-005 | Cabecera Set-Cookie malformada | Observado en 1 respuesta | Informativa |
-| E-006 | Diferencias entre cabeceras de respuestas HTTP 500 | Observado | Informativa |
+| E-001 | Divulgación de información interna mediante error SQL | Confirmado en la evidencia conservada | Media provisional |
+| E-002 | Atributos de seguridad de cookies no observados | Observado en las respuestas recopiladas; inventario pendiente de consolidación | Baja provisional |
+| E-003 | Duplicación de cookies de sesión en una misma respuesta | Reproducido en múltiples respuestas anónimas; impacto no demostrado | Informativa |
+| E-004 | Cabeceras de seguridad no observadas | No observadas en las capturas revisadas; alcance limitado | Baja provisional |
+| E-005 | Cabecera Set-Cookie con formato no válido | Observado en una captura | Informativa |
+| E-006 | Diferencias entre cabeceras de respuestas HTTP 500 | Observado; impacto no demostrado | Informativa |
 
-## Justificación y medidas correctoras
+## Interpretación
 
-### E-001 - Divulgación de información interna mediante error SQL
+- **E-001:** divulgación técnica confirmada en una respuesta conservada.
+  No demuestra SQL injection ni acceso a datos.
+- **E-002:** atributos no observados en las cookies examinadas; falta
+  consolidar todas las respuestas y evaluar el uso real de la cookie.
+- **E-003:** duplicación reproducida; no se ha demostrado impacto sobre
+  sesiones autenticadas.
+- **E-004:** ausencia limitada a las capturas revisadas.
+- **E-005:** anomalía de formato observada una vez; impacto desconocido.
+- **E-006:** diferencias entre respuestas de error; sin impacto demostrado.
 
-Prioridad: Media provisional.
+## Hipótesis fuera de la matriz de vulnerabilidades confirmadas
 
-La respuesta HTTP 500 revela código de error SQL, consulta ejecutada, nombre de tabla, columna, ruta del modelo y número de línea.
+- H-001: posible DOM XSS en el mensaje del login. Sumidero `.html()`
+  identificado, pero fuente controlable no demostrada.
+- H-002: validación servidor del parámetro `cursoacademico` no concluyente.
 
-Medidas:
-- Desactivar la visualización de errores detallados en producción.
-- Mostrar mensajes genéricos al usuario.
-- Mantener registros internos protegidos.
-- Revisar la validación del campo login.
+## Orden de revisión recomendado
 
-### E-002 - Ausencia de atributos de seguridad en cookies
-
-Prioridad: Baja provisional.
-
-Las cinco instancias válidas de gcprsess no presentan Secure, HttpOnly ni SameSite.
-
-Medidas:
-- Revisar la configuración de las cookies de sesión.
-- Aplicar Secure cuando la aplicación funcione exclusivamente mediante HTTPS.
-- Aplicar HttpOnly cuando no se requiera acceso desde JavaScript.
-- Definir una política SameSite adecuada al funcionamiento de la aplicación.
-
-### E-003 - Duplicación de cookies de sesión
-
-Prioridad: Informativa.
-
-Se ha observado la emisión de dos cookies gcprsess diferentes en múltiples respuestas HTML de PEAD. También se ha comprobado su comportamiento individual y conjunto mediante peticiones anónimas. Las respuestas a las rutas protegidas siguen redirigiendo al usuario anónimo al acceso público. No se ha determinado la causa ni demostrado impacto explotable sobre sesiones autenticadas.
-
-Medidas:
-- Revisar la inicialización y regeneración de sesiones.
-- Comprobar que no se emitan cookies contradictorias.
-- Revisar la eliminación y renovación de sesiones.
-
-### E-004 - Cabeceras HTTP de seguridad no observadas
-
-Prioridad: Baja provisional.
-
-No se observan las siguientes cabeceras en las capturas analizadas:
-
-- Strict-Transport-Security
-- Content-Security-Policy
-- X-Frame-Options
-- X-Content-Type-Options
-- Referrer-Policy
-- Permissions-Policy
-- Cross-Origin-Opener-Policy
-- Cross-Origin-Resource-Policy
-- Cross-Origin-Embedder-Policy
-
-Esto no demuestra que estén ausentes en todas las respuestas del servidor.
-
-Medidas:
-- Revisar las cabeceras emitidas por servidor y aplicación.
-- Configurar HSTS cuando corresponda.
-- Definir una política CSP compatible con la aplicación.
-- Configurar protección contra MIME sniffing y framing.
-- Establecer políticas de referencia y aislamiento adecuadas.
-
-### E-005 - Cabecera Set-Cookie malformada
-
-Prioridad: Informativa.
-
-En una respuesta HTTP 500 se observa una cabecera Set-Cookie cuyo primer campo no presenta la estructura habitual nombre=valor.
-
-No se ha identificado el componente que genera la cabecera ni su impacto en el navegador.
-
-Medidas:
-- Revisar la generación de cabeceras Set-Cookie.
-- Comprobar la configuración del componente responsable.
-- Evitar la emisión de cabeceras malformadas.
-
-### E-006 - Diferencias entre cabeceras de respuestas HTTP 500
-
-Prioridad: Informativa.
-
-Las respuestas HTTP 500 conservadas presentan diferencias en sus cabeceras y huellas de contenido. Una nueva respuesta POST vacía al login tuvo 1507 bytes y una huella SHA-256 diferente de la evidencia SQL anterior; su cuerpo no se conservó. Una incluye Content-Length: 1507 y la otra Cache-Control: max-age=0, no-cache, no-store, must-revalidate.
-
-No se ha demostrado un impacto de seguridad.
-
-Medidas:
-- Revisar la uniformidad de las cabeceras de las respuestas de error.
-- Aplicar políticas de caché coherentes cuando corresponda.
-
-## Orden recomendado de actuación
-
-1. Corregir la exposición de errores SQL en producción.
-2. Revisar los atributos de seguridad de las cookies.
-3. Investigar la duplicación de cookies.
-4. Revisar las cabeceras HTTP de seguridad.
-5. Corregir la generación de cabeceras Set-Cookie.
-6. Unificar las políticas de respuesta de error.
+1. Corregir la exposición de errores internos en producción.
+2. Revisar la configuración de cookies de sesión.
+3. Investigar la causa de la duplicación de cookies.
+4. Revisar las políticas de cabeceras HTTP.
+5. Identificar el origen de la cabecera Set-Cookie malformada.
+6. Revisar la uniformidad de respuestas de error.
 
 ## Limitaciones
 
-- Análisis basado en evidencias previamente recopiladas.
-- No se ha verificado la configuración global del servidor.
-- No se ha demostrado explotación ni secuestro de sesión.
-- No se ha comprobado el comportamiento de todas las rutas y respuestas.
-- Las prioridades son provisionales y requieren validación del responsable técnico.
+No se ha demostrado SQL injection, XSS, bypass de autenticación,
+secuestro de sesión ni acceso no autorizado. Las prioridades son provisionales.

@@ -1,102 +1,218 @@
 {
-    "proyecto": "Auditoria PEAD Educarex",
-    "version": "1.0",
-    "fecha_utc": "2026-11-24T16:45:05.632401+00:00",
-    "modo": "analisis_local_sin_conexiones",
-    "hallazgos": [
-        {
-            "id": "E-004",
-            "titulo": "Cabeceras de seguridad no observadas",
-            "estado": "No observadas en las capturas; pendiente de verificación global",
-            "prioridad": "Baja provisional",
-            "descripcion": "Las nueve cabeceras indicadas no aparecen en analisis/cabeceras.txt. La observación se limita a las respuestas recopiladas.",
-            "evidencia": [
-                "strict-transport-security",
-                "content-security-policy",
-                "x-frame-options",
-                "x-content-type-options",
-                "referrer-policy",
-                "permissions-policy",
-                "cross-origin-opener-policy",
-                "cross-origin-resource-policy",
-                "cross-origin-embedder-policy"
-            ]
-        },
-        {
-            "id": "E-002",
-            "titulo": "Atributos de seguridad de cookies",
-            "estado": "Observado en las capturas recopiladas",
-            "prioridad": "Baja provisional",
-            "descripcion": "Las cookies gcprsess observadas no declaran los atributos Secure, HttpOnly ni SameSite. La observación se limita a las respuestas recopiladas.",
-            "evidencia": {
-                "nombres": [
-                    "gcprsess"
-                ],
-                "instancias": 5,
-                "secure": false,
-                "httponly": false,
-                "samesite": "No declarado"
-            }
-        },
-        {
-            "id": "E-003",
-            "titulo": "Duplicación de cookies de sesión en una misma respuesta",
-            "estado": "Observado, causa desconocida",
-            "prioridad": "Informativa",
-            "descripcion": "Se observaron varias cabeceras Set-Cookie con el nombre gcprsess dentro de una misma respuesta HTTP. La causa y el efecto sobre la sesión son desconocidos.",
-            "evidencia": {
-                "cookie": "gcprsess",
-                "observacion": "Duplicación en respuestas recopiladas"
-            }
-        },
-        {
-            "id": "E-001",
-            "titulo": "Divulgación de información interna mediante error SQL",
-            "estado": "Confirmado en la evidencia recopilada",
-            "prioridad": "Media provisional",
-            "descripcion": "La página de error muestra información interna de la base de datos y de la implementación.",
-            "evidencia": {
-                "codigo_sql": "1048",
-                "columna": "login",
-                "tabla": "pead_usuariosacceso0",
-                "archivo": "modules/login/models/Login_model.php",
-                "linea": "46"
-            }
-        },
-        {
-            "id": "E-005",
-            "titulo": "Cabecera Set-Cookie con formato no válido",
-            "estado": "Observado en una captura",
-            "prioridad": "Informativa",
-            "descripcion": "En una respuesta HTTP 500 aparece una cabecera Set-Cookie cuyo primer campo no presenta el formato habitual nombre=valor.",
-            "evidencia": {
-                "archivo": "analisis/cabeceras.txt",
-                "observacion": "Campo inicial de Set-Cookie malformado"
-            }
-        },
-        {
-            "id": "E-006",
-            "titulo": "Diferencias entre cabeceras de respuestas HTTP 500",
-            "estado": "Observado en las evidencias recopiladas",
-            "prioridad": "Informativa",
-            "descripcion": "Dos respuestas HTTP 500 conservadas presentan diferencias en Content-Length y Cache-Control. No se ha demostrado un impacto de seguridad.",
-            "evidencia": {
-                "archivo": "analisis/cabeceras.txt",
-                "primera_respuesta": "Content-Length: 1507",
-                "segunda_respuesta": "Cache-Control: max-age=0, no-cache, no-store, must-revalidate"
-            }
-        }
-    ],
-    "evidencias": [
-        {
-            "archivo": "analisis/cabeceras.txt",
-            "sha256": "8ef9eeff7330aa5fc7a3076c775410ca12ceebf56172d84654b1e68d39006f94",
-            "bytes": 838
-        },
-        {
-            "archivo": "evidencias/pead_500.html",
-            "sha256": "4d2b3c51789d2bd7fbd3b3e11ba92765678f368abeb71666d44c6417d21b4909",
-            "bytes": 1507
-        }
-    ]
+  "proyecto": "Auditoria PEAD Educarex",
+  "version": "1.1",
+  "fecha_utc": "2026-11-24T19:43:31.145475+00:00",
+  "modo": "auditoria_activa_no_destructiva_y_analisis_local",
+  "alcance": {
+    "objetivo": "Evaluación de seguridad de PEAD Educarex",
+    "objetivo_url": "https://www.educarex.es/pead/",
+    "entorno": "Producción",
+    "nota": "Se realizaron peticiones HTTP activas de baja intensidad y análisis local de respuestas y recursos. No se realizaron pruebas DoS ni se ha demostrado modificación de datos."
+  },
+  "hallazgos": [
+    {
+      "id": "E-001",
+      "titulo": "Divulgación de información interna mediante error SQL",
+      "estado": "Confirmado en la evidencia conservada",
+      "prioridad": "Media provisional",
+      "descripcion": "La respuesta HTTP 500 conservada expone el error SQL 1048, la columna login, la tabla pead_usuariosacceso0, una sentencia INSERT y la ruta y línea del modelo. También se observaron respuestas HTTP 500 ante HEAD y OPTIONS en el endpoint de login. En OPTIONS se observó una plantilla de error de base de datos, pero no se confirmó que contuviera exactamente el mismo error SQL.",
+      "evidencia": {
+        "archivo_principal": "evidencias/pead_500.html",
+        "codigo_sql": "1048",
+        "columna": "login",
+        "tabla": "pead_usuariosacceso0",
+        "archivo_fuente_expuesto": "modules/login/models/Login_model.php",
+        "linea": 46,
+        "head": "HTTP 500 observado; cuerpo no conservado",
+        "options": "HTTP 500; plantilla de error DB observada parcialmente"
+      }
+    },
+    {
+      "id": "E-002",
+      "titulo": "Atributos de seguridad de cookies no observados",
+      "estado": "Observado en las respuestas recopiladas; inventario pendiente de consolidación",
+      "prioridad": "Baja provisional",
+      "descripcion": "Las instancias gcprsess examinadas no muestran Secure, HttpOnly ni SameSite. El recuento inicial fue de cinco instancias válidas; se recopilaron respuestas adicionales posteriormente, por lo que el total definitivo debe recalcularse desde las cabeceras redactadas.",
+      "evidencia": {
+        "cookie": "gcprsess",
+        "recuento_inicial": 5,
+        "secure": "No observado",
+        "httponly": "No observado",
+        "samesite": "No declarado",
+        "limitacion": "No se ha consolidado el total de todas las respuestas"
+      }
+    },
+    {
+      "id": "E-003",
+      "titulo": "Duplicación de cookies de sesión en una misma respuesta",
+      "estado": "Reproducido en múltiples respuestas anónimas; impacto no demostrado",
+      "prioridad": "Informativa",
+      "descripcion": "Se observaron varias cabeceras Set-Cookie con nombre gcprsess en múltiples respuestas HTML de PEAD. Las cookies propias se probaron individualmente y en conjunto; las páginas públicas mantuvieron el mismo contenido y las rutas protegidas redirigieron al acceso. No se demostró bypass, fijación ni secuestro de sesión.",
+      "evidencia": {
+        "cookie": "gcprsess",
+        "observacion": "Duplicación en respuestas HTML",
+        "prueba_individual_y_conjunta": "Realizada con cookies anónimas propias",
+        "resultado_acceso": "Redirección al login",
+        "impacto": "No demostrado"
+      }
+    },
+    {
+      "id": "E-004",
+      "titulo": "Cabeceras de seguridad no observadas",
+      "estado": "No observadas en las capturas revisadas; alcance limitado",
+      "prioridad": "Baja provisional",
+      "descripcion": "Las capturas revisadas no muestran determinadas cabeceras de seguridad. Esto no demuestra su ausencia en todas las rutas, respuestas o configuraciones del servidor.",
+      "evidencia": [
+        "Strict-Transport-Security",
+        "Content-Security-Policy",
+        "X-Frame-Options",
+        "X-Content-Type-Options",
+        "Referrer-Policy",
+        "Permissions-Policy",
+        "Cross-Origin-Opener-Policy",
+        "Cross-Origin-Resource-Policy",
+        "Cross-Origin-Embedder-Policy"
+      ]
+    },
+    {
+      "id": "E-005",
+      "titulo": "Cabecera Set-Cookie con formato no válido",
+      "estado": "Observado en una captura",
+      "prioridad": "Informativa",
+      "descripcion": "En una respuesta HTTP 500 se observó una cabecera Set-Cookie cuyo primer campo no presenta la estructura habitual nombre=valor. No se ha identificado su origen ni el efecto en los navegadores.",
+      "evidencia": {
+        "archivo": "analisis/cabeceras.txt",
+        "observacion": "Campo inicial de Set-Cookie malformado",
+        "limitacion": "Origen y efecto no determinados"
+      }
+    },
+    {
+      "id": "E-006",
+      "titulo": "Diferencias entre cabeceras de respuestas HTTP 500",
+      "estado": "Observado; impacto no demostrado",
+      "prioridad": "Informativa",
+      "descripcion": "Las respuestas HTTP 500 conservadas presentan diferencias en cabeceras y huellas. Se registró Content-Length 1507 en determinadas respuestas y una política Cache-Control no-cache en otra. Un POST vacío tuvo 1507 bytes y un hash distinto, pero su cuerpo no se conservó.",
+      "evidencia": {
+        "content_length_observado": 1507,
+        "cache_control_observado": "max-age=0, no-cache, no-store, must-revalidate",
+        "post_vacio": "HTTP 500; cuerpo no conservado",
+        "impacto": "No demostrado"
+      }
+    }
+  ],
+  "evidencias": [
+    {
+      "archivo": "evidencias/pead_500.html",
+      "sha256": "4d2b3c51789d2bd7fbd3b3e11ba92765678f368abeb71666d44c6417d21b4909",
+      "bytes": 1507
+    },
+    {
+      "archivo": "analisis/cabeceras.txt",
+      "sha256": "8ef9eeff7330aa5fc7a3076c775410ca12ceebf56172d84654b1e68d39006f94",
+      "bytes": 838
+    },
+    {
+      "archivo": "evidencias/procesadas/cabeceras_portada.txt",
+      "sha256": "c6b727d2d1755d695ed0b62ca4754300f503b1add013194be3b644a66abe2dae",
+      "bytes": 418
+    },
+    {
+      "archivo": "evidencias/nuevas/pead_get_headers.txt",
+      "sha256": "326232512d4b76356e6bf420f963cdda55fe319e7757f4221216ab4f8221c6da",
+      "bytes": 528
+    },
+    {
+      "archivo": "evidencias/nuevas/logout_get_headers.txt",
+      "sha256": "37f4141caf6ced876cbf30ca2a493c44a28ce5e96cfd88713a8db2308f8320c4",
+      "bytes": 528
+    },
+    {
+      "archivo": "evidencias/nuevas/pead_get_tercera_headers.txt",
+      "sha256": "b89384f3924935d13b09ff8cd1ad2f594e4f4b44c3bb3a74c99343d5cd7d98f9",
+      "bytes": 528
+    },
+    {
+      "archivo": "evidencias/nuevas/pead_get_body.html",
+      "sha256": "396d2abef23bf1f32755fb3ce793c1136334fed2c54fdc2910127aa0405fa0f1",
+      "bytes": 2939
+    },
+    {
+      "archivo": "evidencias/nuevas/logout_get_body.html",
+      "sha256": "396d2abef23bf1f32755fb3ce793c1136334fed2c54fdc2910127aa0405fa0f1",
+      "bytes": 2939
+    },
+    {
+      "archivo": "evidencias/nuevas/login.js",
+      "sha256": "8042a5402c372f02ef00d679cb1b345244d6c3928500249b326a33bf213770dc",
+      "bytes": 2363
+    },
+    {
+      "archivo": "evidencias/nuevas/prueba_comilla_body.html",
+      "sha256": "915405079436307d7a08eef38026746743c9a40bc267a07138e301779aa0f8f3",
+      "bytes": 59
+    },
+    {
+      "archivo": "evidencias/nuevas/prueba_comilla_resultado.txt",
+      "sha256": "54cab566f3494f908c051fc29e868e6d46a27753a9ced1054cbdb46d0ba25205",
+      "bytes": 183
+    },
+    {
+      "archivo": "evidencias/nuevas/post_login_vacio_resultado.txt",
+      "sha256": "3a014aac7cc1670e08d2651533312a509fde93c75e1bc6686ae98390802d0c61",
+      "bytes": 527
+    },
+    {
+      "archivo": "evidencias/nuevas/control_acceso_cookies_fallidas.txt",
+      "sha256": "8de6974f0db558d86ab6f80ef4cf866d810a7d934b5a765e7f2e61bfa3d3da8f",
+      "bytes": 775
+    },
+    {
+      "archivo": "evidencias/nuevas/validacion/curso_invalido_body.txt",
+      "sha256": "915405079436307d7a08eef38026746743c9a40bc267a07138e301779aa0f8f3",
+      "bytes": 59
+    },
+    {
+      "archivo": "evidencias/nuevas/validacion/curso_invalido_headers.txt",
+      "sha256": "688c3e51de06e43b6889bbe263885b27eb6a4f65c5f0300cdad76c2f237c47ee",
+      "bytes": 510
+    },
+    {
+      "archivo": "evidencias/nuevas/reflexion/body.html",
+      "sha256": "5c057ccf5001768404b7d7c8af458e0e7cd697c5fd1db499ecde9aba47dbed7a",
+      "bytes": 270
+    },
+    {
+      "archivo": "evidencias/nuevas/reflexion/headers.txt",
+      "sha256": "daad3e3018de45a176309838a5e79f6031f1d90a7f2219bd9dc6e9d089f92aa6",
+      "bytes": 317
+    }
+  ],
+  "hipotesis_pendientes": [
+    {
+      "id": "H-001",
+      "titulo": "Posible DOM XSS en el flujo de mensajes del login",
+      "estado": "Hipótesis no confirmada",
+      "detalle": "login.js inserta data.mensaje mediante jQuery .html(). Las respuestas JSON examinadas contienen un mensaje genérico y no reflejan los marcadores enviados. No se ha demostrado que una entrada anónima controle data.mensaje ni ejecución de código en PEAD."
+    },
+    {
+      "id": "H-002",
+      "titulo": "Validación del parámetro cursoacademico",
+      "estado": "No concluyente",
+      "detalle": "La validación del navegador no declara regla para cursoacademico. El POST con curso ficticio fue rechazado con el mismo mensaje genérico de credenciales incorrectas; no permite determinar si el servidor valida el curso."
+    }
+  ],
+  "pruebas_negativas": [
+    "Las credenciales ficticias fueron rechazadas.",
+    "Los marcadores enviados no aparecieron en las respuestas JSON examinadas.",
+    "Las cookies anónimas propias no permitieron acceder a las rutas protegidas.",
+    "Las rutas administrativas probadas redirigieron al login.",
+    "No se ha demostrado SQL injection, XSS, bypass ni secuestro de sesión."
+  ],
+  "limitaciones": [
+    "No se dispone de cuentas de prueba.",
+    "No se dispone del código fuente ni de la configuración interna.",
+    "No se ha identificado la versión exacta del framework.",
+    "El total de instancias de cookies no está consolidado.",
+    "No se ha demostrado explotación de las hipótesis pendientes."
+  ]
 }

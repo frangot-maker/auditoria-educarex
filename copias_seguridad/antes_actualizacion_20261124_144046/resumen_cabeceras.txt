@@ -1,0 +1,25 @@
+AUDITORIA PEAD - ANALISIS DE CABECERAS
+
+RESPUESTAS OBSERVADAS:
+- HTTP 307 Temporary Redirect
+- HTTP 500 Internal Server Error
+
+COOKIES:
+- Se observaron varias cabeceras Set-Cookie.
+- La cookie gcprsess aparece repetida en las respuestas.
+- Los fragmentos registrados no muestran Secure.
+- Los fragmentos registrados no muestran HttpOnly.
+- Los fragmentos registrados no muestran SameSite.
+- Una cabecera Set-Cookie está incompleta o mal transcrita.
+
+CABECERAS DE SEGURIDAD:
+- Strict-Transport-Security: no observada.
+- Content-Security-Policy: no observada.
+- X-Frame-Options: no observada.
+- X-Content-Type-Options: no observada.
+- Referrer-Policy: no observada.
+
+LIMITACIONES:
+- Análisis basado en cabeceras previamente recopiladas.
+- No se ha verificado la configuración global del servidor.
+- No se ha demostrado explotación ni secuestro de sesión.

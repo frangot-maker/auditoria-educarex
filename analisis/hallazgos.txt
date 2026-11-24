@@ -1,25 +1,11 @@
-AUDITORIA PEAD - EDUCAREX
+AUDITORÍA PEAD EDUCAREX — VERSIÓN 1.1
 
-HALLAZGO 1:
-HTTP 500 en /pead/login/login/login
+E-001: Divulgación de información interna mediante error SQL — Confirmado en la evidencia conservada.
+E-002: Atributos de seguridad de cookies no observados — Observado en las respuestas recopiladas; inventario pendiente de consolidación.
+E-003: Duplicación de cookies de sesión en una misma respuesta — Reproducido en múltiples respuestas anónimas; impacto no demostrado.
+E-004: Cabeceras de seguridad no observadas — No observadas en las capturas revisadas; alcance limitado.
+E-005: Cabecera Set-Cookie con formato no válido — Observado en una captura.
+E-006: Diferencias entre cabeceras de respuestas HTTP 500 — Observado; impacto no demostrado.
 
-HALLAZGO 2:
-Error SQL 1048:
-Column 'login' cannot be null
-
-HALLAZGO 3:
-Exposicion de informacion interna:
-modules/login/models/Login_model.php
-Linea 46
-
-HALLAZGO 4:
-Exposicion de tabla:
-pead_usuariosacceso0
-
-HALLAZGO 5:
-Dos cabeceras Set-Cookie:
-gcprsess
-
-HALLAZGO 6:
-Redireccion administrativa:
-307 -> /pead/login/logout.html
+Hipótesis pendientes: H-001 posible DOM XSS; H-002 validación de curso académico.
+No se ha demostrado SQLi, XSS, bypass ni secuestro de sesión.
